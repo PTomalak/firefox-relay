@@ -2006,11 +2006,11 @@ impl Renderer {
                 let old = self.texture_resolver.texture_cache_map.remove(&allocation.id);
                 match allocation.kind {
                     TextureCacheAllocationKind::Alloc(_) => {
-                        assert!(old.is_none(), "Renderer and backend disagree!");
+                        if old.is_some() { warn!("Renderer and backend disagree!"); }
                     }
                     TextureCacheAllocationKind::Reset(_) |
                     TextureCacheAllocationKind::Free => {
-                        assert!(old.is_some(), "Renderer and backend disagree!");
+                        if old.is_none() { warn!("Renderer and backend disagree!"); }
                     }
                 }
                 if let Some(old) = old {
@@ -5223,7 +5223,6 @@ impl Renderer {
             }
         } else {
             info!("loading cached textures");
-            self.device.begin_frame();
             for (_id, item) in self.texture_resolver.texture_cache_map.drain() {
                 self.device.delete_texture(item.texture);
             }

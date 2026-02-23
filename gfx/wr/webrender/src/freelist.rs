@@ -194,6 +194,9 @@ impl<T, M> FreeList<T, M> {
     }
 
     pub fn get_opt(&self, id: &WeakFreeListHandle<M>) -> Option<&T> {
+        if (id.index as usize) >= self.slots.len() {
+            return None;
+        }
         let slot = &self.slots[id.index as usize];
         if slot.epoch == id.epoch {
             slot.value.as_ref()
@@ -203,6 +206,9 @@ impl<T, M> FreeList<T, M> {
     }
 
     pub fn get_opt_mut(&mut self, id: &WeakFreeListHandle<M>) -> Option<&mut T> {
+        if (id.index as usize) >= self.slots.len() {
+            return None;
+        }
         let slot = &mut self.slots[id.index as usize];
         if slot.epoch == id.epoch {
             slot.value.as_mut()
