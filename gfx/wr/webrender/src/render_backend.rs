@@ -1985,27 +1985,27 @@ impl RenderBackend {
             debug!("\tdocument {:?}", id);
             let scene_name = format!("scene-{}-{}", id.namespace_id.0, id.id);
             let scene = config.deserialize_for_scene::<Scene, _>(&scene_name)
-                .expect(&format!("Unable to open {}.ron", scene_name));
+                .unwrap_or_else(Scene::new);
 
             let scene_spatial_tree_name = format!("scene-spatial-tree-{}-{}", id.namespace_id.0, id.id);
             let scene_spatial_tree = config.deserialize_for_scene::<SceneSpatialTree, _>(&scene_spatial_tree_name)
-                .expect(&format!("Unable to open {}.ron", scene_spatial_tree_name));
+                .unwrap_or_else(SceneSpatialTree::new);
 
             let interners_name = format!("interners-{}-{}", id.namespace_id.0, id.id);
             let interners = config.deserialize_for_scene::<Interners, _>(&interners_name)
-                .expect(&format!("Unable to open {}.ron", interners_name));
+                .unwrap_or_default();
 
             let data_stores_name = format!("data-stores-{}-{}", id.namespace_id.0, id.id);
             let data_stores = config.deserialize_for_frame::<DataStores, _>(&data_stores_name)
-                .expect(&format!("Unable to open {}.ron", data_stores_name));
+                .unwrap_or_default();
 
             let properties_name = format!("properties-{}-{}", id.namespace_id.0, id.id);
             let properties = config.deserialize_for_frame::<SceneProperties, _>(&properties_name)
-                .expect(&format!("Unable to open {}.ron", properties_name));
+                .unwrap_or_else(SceneProperties::new);
 
             let frame_spatial_tree_name = format!("frame-spatial-tree-{}-{}", id.namespace_id.0, id.id);
             let frame_spatial_tree = config.deserialize_for_frame::<SpatialTree, _>(&frame_spatial_tree_name)
-                .expect(&format!("Unable to open {}.ron", frame_spatial_tree_name));
+                .unwrap_or_else(SpatialTree::new);
 
             // Update the document if it still exists, rather than replace it entirely.
             // This allows us to preserve state information such as the frame stamp,
